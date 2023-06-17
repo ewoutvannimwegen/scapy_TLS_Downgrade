@@ -8,10 +8,10 @@ import scapy.layers.tls.handshake
 import scapy.layers.tls.crypto.suites
 
 # Available operating modes
-ORIGINAL, DEBUG, INSECURE, SECURE = 0, 1, 2, 3
+ORIGINAL, DEBUG, INSECURE, SECURE, DROP_SECURE = 0, 1, 2, 3, 4
 
 # Set operating mode
-config = ORIGINAL
+config = DEBUG
 
 # List of secure cipher suites, make sure to add more if handshake fails with server
 secureCipherSuites = [
@@ -59,8 +59,8 @@ def pktHandler(pkt):
         elif(config == DEBUG):
             # Swap 2 cipher suites, avoid possiblity of removing a required suite
             #, while stll emulating the same effect as overwritting
-            x = scapy.layers.tls.crypto.suites.TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256.val;
-            y = scapy.layers.tls.crypto.suites.TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256;
+            x = scapy.layers.tls.crypto.suites.TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256.val # 0xc02b
+            y = scapy.layers.tls.crypto.suites.TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256.val # 0x009c
             xDetected, yDetected = 0, 0
             xPos, yPos = 0, 0
             idx = 0
@@ -76,6 +76,13 @@ def pktHandler(pkt):
                     print("Swapping", xPos, "and", yPos)
                     break
                 idx += 1
+        elif(config == DROP_SECURE):
+            idx = 0
+            while(idx < ciphers-1):
+                if (scapyPkt['TLS'].msg[0].ciphers[idx] == 
+                    scapy.layers.tls.crypto.suites.TLS_DHE_RSA_WITH_AES_256_GCM_SHA384.val): # 0x009c
+                    pkt.drop()
+                    return 
         elif(config == ORIGINAL):
             pass
 
