@@ -1,5 +1,11 @@
 # TLS Downgrade Attack
 
+Obtain IP Nginx webserver docker container
+
+```console
+docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' nginx-server
+```
+
 Install apt packages
 
 ```console
@@ -12,7 +18,7 @@ Install pip packages
 pip3 install -r req.txt
 ```
 
-Add iptables rules:
+Add iptables rules => /etc/iptables/rules.v4
 
 ```console
 -A FORWARD -s $TARGET_IP/32 -j NFQUEUE --queue-num 2
