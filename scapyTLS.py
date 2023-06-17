@@ -15,7 +15,7 @@ config = ORIGINAL
 
 # List of secure cipher suites, make sure to add more if handshake fails with server
 secureCipherSuites = [
-    scapy.layers.tls.crypto.suites.TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256.val, # 0xc02f
+    scapy.layers.tls.crypto.suites.TLS_DHE_RSA_WITH_AES_256_GCM_SHA384.val, # 0x009c
     scapy.layers.tls.crypto.suites.TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256.val # 0xc02f
 ]
 
@@ -23,10 +23,10 @@ secureCipherSuites = [
 insecureCipherSuites = [
     scapy.layers.tls.crypto.suites.TLS_RSA_WITH_3DES_EDE_CBC_SHA.val, 
     scapy.layers.tls.crypto.suites.TLS_RSA_WITH_RC4_128_SHA.val, 
-    scapy.layers.tls.crypto.suites.TLS_RSA_WITH_AES_128_CBC_SHA.val,
-    scapy.layers.tls.crypto.suites.TLS_RSA_WITH_AES_256_CBC_SHA.val,
-    scapy.layers.tls.crypto.suites.TLS_RSA_WITH_AES_128_CBC_SHA256.val,
-    scapy.layers.tls.crypto.suites.TLS_RSA_WITH_AES_256_CBC_SHA256.val
+    #scapy.layers.tls.crypto.suites.TLS_RSA_WITH_AES_128_CBC_SHA.val,
+    #scapy.layers.tls.crypto.suites.TLS_RSA_WITH_AES_256_CBC_SHA.val,
+    #scapy.layers.tls.crypto.suites.TLS_RSA_WITH_AES_128_CBC_SHA256.val,
+    #scapy.layers.tls.crypto.suites.TLS_RSA_WITH_AES_256_CBC_SHA256.val
 ]
 
 def pktHandler(pkt):
@@ -59,8 +59,8 @@ def pktHandler(pkt):
         elif(config == DEBUG):
             # Swap 2 cipher suites, avoid possiblity of removing a required suite
             #, while stll emulating the same effect as overwritting
-            x = scapy.layers.tls.crypto.suites.TLS_RSA_WITH_AES_128_CBC_SHA.val
-            y = scapy.layers.tls.crypto.suites.TLS_DHE_RSA_WITH_AES_128_CBC_SHA.val
+            x = scapy.layers.tls.crypto.suites.TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256.val;
+            y = scapy.layers.tls.crypto.suites.TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256;
             xDetected, yDetected = 0, 0
             xPos, yPos = 0, 0
             idx = 0
@@ -90,6 +90,8 @@ def pktHandler(pkt):
         #print(scapyPkt.show())
 
     pkt.accept()
+
+#load_layer("tls")
 
 print("Scapy version", scapy.__version__)
 nfqueue = netfilterqueue.NetfilterQueue()

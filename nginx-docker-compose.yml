@@ -13,9 +13,23 @@ services:
     networks:
       nginx_server_network:
         ipv4_address: 172.30.0.2
+  mitm:
+    container_name: mitm
+    image: mitm
+    cap_add:
+      - NET_ADMIN
+      - SYS_MODULE
+    volumes:
+      - ./scapyTLS.py:/home/mitm/scapyTLS.py:ro
+      - ./startup.sh:/home/mitm/startup.sh
+    command: ["sh", "-c", "/home/mitm/startup.sh"]
+    networks:
+      nginx_server_network:
+        ipv4_address: 172.30.0.3
 
 networks:
   nginx_server_network:
+    driver: bridge
     ipam:
       config:
-        - subnet: 172.30.0.0/30
+        - subnet: 172.30.0.0/28

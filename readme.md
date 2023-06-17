@@ -1,5 +1,11 @@
 # TLS Downgrade Attack
 
+Lookup installed cipher suites
+
+```console
+openssl ciphers -v | column -t
+```
+
 Obtain IP Nginx webserver docker container
 
 ```console
